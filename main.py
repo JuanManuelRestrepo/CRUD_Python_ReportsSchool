@@ -8,12 +8,11 @@ print("Welcome")
 List_notas=[]
 #creamo el diccionario donde se guardaran las keys con los valores de cda nua de ellas 
 estudiante={}
-ruta="C:/Users/USUARIO/OneDrive/Documentos/Python/APLICACIÓN GESTION NOTAS/"
-nombre_archivo="App_Notas.txt"
+ruta="C:/Users/USUARIO/OneDrive/Escritorio/Prueba_git/CRUD_Python_ReportsSchool"
+nombre_archivo="Grupo 1.txt"
 archivo= ruta + nombre_archivo
 
 def guardar_notas(List_notas, archivo):
-
     try:
         # Leer el archivo para obtener el último número asignado previamente
         with open(archivo, "r") as documento:
@@ -70,7 +69,6 @@ def Analisis_datos(archivo):
     cont_aprob=0
     cont_repro=0
     n_est=0
-    
     with open(archivo, "r") as documento:
         for linea in documento:
             n_est+=1
@@ -82,7 +80,6 @@ def Analisis_datos(archivo):
                 cont_repro+=1
         if n_est==0:
                 print("No hay estudiantes registrados")
-
     print(f"EL numero de estudiantes que aprobaron fueron: {cont_aprob}")
     print(f"El numero de estudiantes reprobados es de: {cont_repro}")
 
@@ -91,14 +88,14 @@ def Grupode_finido():
     N_estudiantes=int(input("Digite el numero de estudiantes del curso: "))
     print("NOTAS 0-5")
     for i in range(1,N_estudiantes+1): 
+        nombre=input(f"Digite el nombre  del estudiante {i}: ")
+        identificacion=(input(f"Digite el numero de identificación del estudiante{i}: "))
         while True:  # Repetir hasta que la calificación sea válida
-            nombre=input(f"Digite el nombre  del estudiante {i}: ")
-            identificacion=(input(f"Digite el numero de identificación del estudiante{i}: "))
             calificacion = float(input(f'Digite la calificacion del estudiante {i}: '))
             if 0.0 <= calificacion <= 5.0:
                 break  # Salir del bucle si la calificación es válida, sale del bucle while
             else: # si la calificacion no es valida, la vuelve a pedir 
-                print("La calificación debe estar entre 1 y 100. Inténtelo de nuevo.") 
+                print("La calificación debe estar entre 0 y 5. Inténtelo de nuevo.") 
         #cada dato del estudiante se guarda en un diccionario 
         #Cada ckey tiene el calor asignado al estudiante correspondiente        
         estudiante={"Nombre": nombre , 
@@ -110,47 +107,57 @@ def Grupode_finido():
     
     return List_notas
 
+
 def Editar_Estudiante():
     # Solicitar al usuario que ingrese el ID del estudiante que desea editar
     indice = input("Digite el ID del estudiante que desea editar: ")
+    
     try:    
         # Abrir el archivo en modo lectura
         with open(archivo, "r") as documento:
             lineas = documento.readlines()  # Leer todas las líneas del archivo
 
-        # Abrir el archivo en modo escritura para sobrescribirlo
-        with open(archivo, "w") as documento:
-            # Variable para indicar si se encontró el ID
-            id_encontrado = False
-            # Iterar sobre cada línea del archivo
-            for linea in lineas:
-                # Verificar si la línea comienza con "id: " y contiene el ID buscado
-                if linea.startswith(f"id: {indice}"):
-                    # Actualizar los datos del estudiante en la línea
+        # Variable para indicar si se encontró el ID
+        id_encontrado = False
+            
+        # Iterar sobre cada línea del archivo para buscar el ID y mostrar los datos si se encuentra
+        for linea in lineas:
+            partes = linea.strip().split(" - ")
+            if partes[0].split(": ")[1] == indice:
+                id_encontrado = True
+                # Mostrar los datos actuales del estudiante
+                print("Datos actuales del estudiante:")
+                print(f"Nombre: {partes[1]}")
+                print(f"Identificación: {partes[2]}")
+                print(f"Calificación: {partes[3]}")
+                break
+        
+        # Verificar si se encontró el ID
+        if id_encontrado:
+            # Abrir el archivo en modo escritura para sobrescribirlo
+            with open(archivo, "w") as documento:
+                # Iterar sobre cada línea del archivo para realizar la edición si es necesario
+                for linea in lineas:
                     partes = linea.strip().split(" - ")
-                    if partes[0]==indice:
-                        #Marcar que el id se encontro
-                        id_encontrado=True
-                        # Solicitar al usuario que ingrese los nuevos datos del estudiante
+                    if partes[0].split(": ")[1] == indice:
+                        # Realizar la edición solicitando los nuevos datos al usuario
                         nuevo_nombre = input("Digite el nuevo nombre: ")
                         nueva_identificacion = input("Digite la nueva identificación: ")
                         nueva_calificacion = float(input("Digite la nueva calificación: "))
-
-                        partes[1] = f"{nuevo_nombre}"
-                        partes[2] = f"{nueva_identificacion}"
-                        partes[3] = f"{nueva_calificacion}\n"
-                        # Escribir la línea actualizada en el archivo
-                        documento.write(" - ".join(partes))
-                  
-                # Verificar si se encontró el ID
-            if not id_encontrado:
-                    print(f"No se encontró ningún estudiante con el ID {indice}") 
-                    documento.write(linea)
-                  
+                        
+                        nueva_linea = f"id: {indice} - {nuevo_nombre} - {nueva_identificacion} - {nueva_calificacion}\n"
+                        documento.write(nueva_linea)
+                    else:
+                        documento.write(linea)
+            print("Los datos del estudiante han sido actualizados correctamente.")
+        else:
+            print(f"No se encontró ningún estudiante con el ID {indice}") 
 
     except FileNotFoundError:
         print("El archivo no existe.")
 
+
+    
 def Agregar_estudiante_dinamicamente(): 
     while True:
         nombre = input("Digite el nombre del estudiante: ")
