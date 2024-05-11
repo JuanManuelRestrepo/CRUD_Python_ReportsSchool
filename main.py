@@ -1,8 +1,4 @@
-#poner funciones de promedio, analisis, listar estudiantes, salir
 #crear un menu para que el usuario pueda elegir que desea hacer (NO HACERLO DENTRO DE NA FUNCION, SINO EN UN CONDICIONAL)
-#Agregar la funcionalidad de poder modificar el estudiante 
-#Implementar el llenado de los estudiantes en un archivo .txt y que los uaurios tengan un enumerate, 
-
 print("Welcome")
 #Creamos la lista donde se almacenaran las notas de los estudiantes
 List_notas=[]
@@ -11,6 +7,7 @@ estudiante={}
 ruta="C:/Users/USUARIO/OneDrive/Escritorio/Prueba_git/CRUD_Python_ReportsSchool"
 nombre_archivo="Grupo 1.txt"
 archivo= ruta + nombre_archivo
+
 
 def guardar_notas(List_notas, archivo):
     try:
@@ -31,10 +28,7 @@ def guardar_notas(List_notas, archivo):
             documento.write(f'id: {i} - {estudiante["Nombre"]} - {estudiante["Identificación"]} - {estudiante["Nota"]}\n')
     documento.close()
 
-
-#funcion para calcular el promedio segun los registros de estudiantes 
-#creados en el archivo de texto
-#El parametro es el archivo que estamos generando
+#Funcionalidad de promedio
 def Promedio(archivo):
     #Inicializar las variables de suma de las notas registradas
     #Inicializar un contador para conocer el numero de registros conocidos
@@ -49,10 +43,10 @@ def Promedio(archivo):
             num_ids+=1
             #separamos la linea por el caracter "-"
             partes=linea.split("-")
-            #separamos la ultima parte de la linea por el caracter " "
-            #y extraemos el ultimo elemento de la lista
-            #que es la nota
+            #separamos la ultima parte de la linea por el caracter "- "
+            #y extraemos el ultimo elemento de la lista que es la nota
             nota=float(partes[-1].strip())
+
             #sumamos la nota a la variable suma_total
             suma_total+=nota
 
@@ -66,14 +60,21 @@ def Promedio(archivo):
             print(f"El promedio del grupo es: {round(promedio,2)}")
 
 def Analisis_datos(archivo):
+    #declaramos contadores de aprobados y reprobados
     cont_aprob=0
     cont_repro=0
     n_est=0
+    #abrimos el archivo en modo lectura
     with open(archivo, "r") as documento:
+        #iteramos por cada linea dentro del archivo
         for linea in documento:
+            #la variable suma una por cada id encontrado
             n_est+=1
             partes=linea.split("-")
+            # en la variable nota almacenamos cada una de las notas del arhivo
             nota=float(partes[-1].strip())
+
+            #Validaciones de aprobados y reprobados
             if nota>=3:
                 cont_aprob+=1
             else:
@@ -85,9 +86,13 @@ def Analisis_datos(archivo):
 
 
 def Grupode_finido(): 
+    #definimos el numero de estudiantes del grupo
     N_estudiantes=int(input("Digite el numero de estudiantes del curso: "))
     print("NOTAS 0-5")
+    #creamos un bucle desde 1 hasta el numero de estudiantes del curso
     for i in range(1,N_estudiantes+1): 
+
+        #Inputs de los estudiantes
         nombre=input(f"Digite el nombre  del estudiante {i}: ")
         identificacion=(input(f"Digite el numero de identificación del estudiante{i}: "))
         while True:  # Repetir hasta que la calificación sea válida
@@ -111,7 +116,7 @@ def Grupode_finido():
 def Editar_Estudiante():
     # Solicitar al usuario que ingrese el ID del estudiante que desea editar
     indice = input("Digite el ID del estudiante que desea editar: ")
-    
+
     try:    
         # Abrir el archivo en modo lectura
         with open(archivo, "r") as documento:
@@ -122,7 +127,9 @@ def Editar_Estudiante():
             
         # Iterar sobre cada línea del archivo para buscar el ID y mostrar los datos si se encuentra
         for linea in lineas:
+            #Dividimos la linea por cada caracter " - "
             partes = linea.strip().split(" - ")
+            #Si el ID de la linea es igual al ID que se ingreso, se imprime la linea
             if partes[0].split(": ")[1] == indice:
                 id_encontrado = True
                 # Mostrar los datos actuales del estudiante
