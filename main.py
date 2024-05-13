@@ -163,7 +163,6 @@ def Editar_Estudiante():
     except FileNotFoundError:
         print("El archivo no existe.")
 
-
     
 def Agregar_estudiante_dinamicamente(): 
     while True:
@@ -188,18 +187,47 @@ def Agregar_estudiante_dinamicamente():
     return List_notas
 
 def Listar_estudiantes_texto():
-    with open(archivo,"r") as documento:
-        for linea in documento:
-            print(linea)
+    try:
+        with open(archivo,"r+") as documento:
+            for linea in documento:
+                print(linea)
+    except FileNotFoundError:
+        print("El archivo no existe.")
 
+def Eliminar_estudiante():
+    buscar_id = input("Digite el id del estudiante que desea eliminar de la lista: ")
+    try:
+        with open(archivo, "r+") as documento:
+            lineas = documento.readlines() #leemos el archivo
+            documento.seek(0)  # Reiniciamos el puntero del archivo al principio.
+            # Si se borra los estudiantes se duplican
+#La funcion principal del .seek es para ir a la linea del archivo donde nosotros queramos
 
+            id_actual = 1  # Inicializamos el ID actual. Con el fin de una vez borrado un estudiante los id se actualicen 
+
+            for linea in lineas: #recorremos cada linea en lineas 
+                partes = linea.strip().split(" - ")  #Dividimos cada linea en " - " 
+                id_estudiante = int(partes[0].split(": ")[1])  # Obtenemos el ID del estudiante como entero
+
+                # Si el ID del estudiante no coincide con el ID buscado, lo escribimos en el archivo
+                if id_estudiante != int(buscar_id): # Si el id estudiante diferente a id buscar 
+                    documento.write(f"id: {id_actual} - {' - '.join(partes[1:])}\n")  # escribimos de nuevo en archivo, con el id consecutivoi
+                    # reinicimos el id y con join juntamos los demas datos del estudiante
+                    id_actual += 1  # Incrementamos el ID solo si escribimos la línea
+
+            documento.truncate()
+
+        print("Estudiante eliminado exitosamente")
+
+    except FileNotFoundError:
+        print("El archivo no fue encontrado")
 
      
 while True:   
     # Menu de opciones del programa
     print("----------------------------------------------------------------------------------------------")
     print("BIENVENIDO AL MENU PRINCIPAL")
-    decision=int(input("1.Definir tamaño grupo \n2.Agregar notas dinamicamente \n3.Promedio Notas \n4.Mostrar datos de las notas \n5.Listar\n6.Editar usuario\n7.Salir del programa \nDigite la opcion: "))
+    decision=int(input("1.Definir tamaño grupo \n2.Agregar notas dinamicamente \n3.Promedio Notas \n4.Mostrar datos de las notas \n5.Listar\n6.Editar usuario\n7.Eliminar Estudiante \n8.Salir del programa \nDigite la opcion: "))
     if decision==1: 
         Grupode_finido() 
         while True: 
@@ -228,9 +256,11 @@ while True:
         Listar_estudiantes_texto()
     elif(decision==6): 
         Editar_Estudiante()
-    elif(decision>=7): 
+    elif(decision==7):
+        Eliminar_estudiante()
+    elif(decision>=8): 
         print("FUE UN PLACER")
         break
-    elif(decision<=0):
+    else:
         print("Opcion no valida")
-        break
+        continue
