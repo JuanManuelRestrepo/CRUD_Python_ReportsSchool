@@ -153,12 +153,16 @@ def Editar_Estudiante():
                         nueva_calificacion = float(input("Digite la nueva calificación: "))
                         
                         nueva_linea = f"id: {indice} - {nuevo_nombre} - {nueva_identificacion} - {nueva_calificacion}\n"
+                        print("ID encontrado")
                         documento.write(nueva_linea)
+
+                
                     else:
                         documento.write(linea)
             print("Los datos del estudiante han sido actualizados correctamente.")
         else:
             print(f"No se encontró ningún estudiante con el ID {indice}") 
+            documento.write(linea)
 
     except FileNotFoundError:
         print("El archivo no existe.")
@@ -168,6 +172,19 @@ def Agregar_estudiante_dinamicamente():
     while True:
         nombre = input("Digite el nombre del estudiante: ")
         identificacion = input("Digite el número de identificación del estudiante: ")
+        existe=False
+        #Validación para numero de documento diferente
+        with open(archivo, "r") as documento: 
+            lineas = documento.readlines()
+            for linea in lineas:
+                partes = linea.strip().split(" - ")
+                if int (partes[2]) == int(identificacion):
+                    existe=True
+                    print("El estudiante ya existe. Por favor, digite otro número de identificación.")
+                    while int(identificacion)==int(partes[2]):
+                        identificacion=input("Digite el numero de identificación del estudiante: ")
+                        break
+            
         calificacion = float(input("Digite la calificación del estudiante: "))
 
         while not 1 <= calificacion <= 5:
