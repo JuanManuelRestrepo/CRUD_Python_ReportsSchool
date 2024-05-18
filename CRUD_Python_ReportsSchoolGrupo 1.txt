@@ -1,6 +1,3 @@
-id: 1 - Carlos - 949126 - 4.5
-id: 2 - Juan - 941626 - 1.6
-id: 3 - Jhan - 941629 - 3.6
-id: 4 - Isabella - 522626 - 4.6
-id: 5 - Julian - 992999 - 2.6
-id: 6 - Stiven Fierro  - 265456 - 2.6
+id: 1 - Mariana - 989161284 - 4.8
+id: 2 - Daniel - 462656 - 4.1
+id: 3 - Sebastian - 949165646 - 2.6
