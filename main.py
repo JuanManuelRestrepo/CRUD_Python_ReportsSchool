@@ -91,10 +91,31 @@ def Grupode_finido():
     print("NOTAS 0-5")
     #creamos un bucle desde 1 hasta el numero de estudiantes del curso
     for i in range(1,N_estudiantes+1): 
-
         #Inputs de los estudiantes
         nombre=input(f"Digite el nombre  del estudiante {i}: ")
-        identificacion=(input(f"Digite el numero de identificación del estudiante{i}: "))
+        while True:
+            identificacion = input(f"Digite el número de identificación del estudiante: ")
+            # Validación para número de documento diferente
+            existe = False
+            try:
+                #abrimos el archivo en modo lectura
+                with open(archivo, "r") as documento:
+                    lineas = documento.readlines()
+                    for linea in lineas:
+                        partes = linea.strip().split(" - ")
+                        if int(partes[2]) == int(identificacion):
+                            #Identificación ya existente
+                            existe = True
+                            print("El estudiante ya existe. Por favor, digite otro número de identificación.")
+                            break
+            #Manejo excepcion de que el archivo no existe
+            except FileNotFoundError:
+                # Si el archivo no existe, no hay problema
+                pass
+
+            if not existe:
+                break
+
         while True:  # Repetir hasta que la calificación sea válida
             calificacion = float(input(f'Digite la calificacion del estudiante {i}: '))
             if 0.0 <= calificacion <= 5.0:
@@ -142,21 +163,22 @@ def Editar_Estudiante():
         # Verificar si se encontró el ID
         if id_encontrado:
             # Abrir el archivo en modo escritura para sobrescribirlo
-            with open(archivo, "w") as documento:
+            with open(archivo, "r+") as documento:
                 # Iterar sobre cada línea del archivo para realizar la edición si es necesario
                 for linea in lineas:
                     partes = linea.strip().split(" - ")
                     if partes[0].split(": ")[1] == indice:
                         # Realizar la edición solicitando los nuevos datos al usuario
                         nuevo_nombre = input("Digite el nuevo nombre: ")
-                        nueva_identificacion = input("Digite la nueva identificación: ")
+                        nueva_identificacion = input("Digite la nueva identificación: ")     
                         nueva_calificacion = float(input("Digite la nueva calificación: "))
-                        
+                        if 0.0 <= nueva_calificacion<= 5.0:
+                            break  # Salir del bucle si la calificación es válida, sale del bucle while
+                        else: # si la calificacion no es valida, la vuelve a pedir 
+                            print("La calificación debe estar entre 0 y 5. Inténtelo de nuevo.")
                         nueva_linea = f"id: {indice} - {nuevo_nombre} - {nueva_identificacion} - {nueva_calificacion}\n"
                         print("ID encontrado")
                         documento.write(nueva_linea)
-
-                
                     else:
                         documento.write(linea)
             print("Los datos del estudiante han sido actualizados correctamente.")
@@ -171,19 +193,29 @@ def Editar_Estudiante():
 def Agregar_estudiante_dinamicamente(): 
     while True:
         nombre = input("Digite el nombre del estudiante: ")
-        identificacion = input("Digite el número de identificación del estudiante: ")
-        existe=False
-        #Validación para numero de documento diferente
-        with open(archivo, "r") as documento: 
-            lineas = documento.readlines()
-            for linea in lineas:
-                partes = linea.strip().split(" - ")
-                if int (partes[2]) == int(identificacion):
-                    existe=True
-                    print("El estudiante ya existe. Por favor, digite otro número de identificación.")
-                    while int(identificacion)==int(partes[2]):
-                        identificacion=input("Digite el numero de identificación del estudiante: ")
-                        break
+        while True:
+            identificacion = input(f"Digite el número de identificación del estudiante: ")
+
+            # Validación para número de documento diferente
+            existe = False
+            try:
+                #abrimos el archivo en modo lectura
+                with open(archivo, "r") as documento:
+                    lineas = documento.readlines()
+                    for linea in lineas:
+                        partes = linea.strip().split(" - ")
+                        if int(partes[2]) == int(identificacion):
+                            #Identificación ya existente
+                            existe = True
+                            print("El estudiante ya existe. Por favor, digite otro número de identificación.")
+                            break
+            #Manejo excepcion de que el archivo no existe
+            except FileNotFoundError:
+                # Si el archivo no existe, no hay problema
+                pass
+
+            if not existe:
+                break
             
         calificacion = float(input("Digite la calificación del estudiante: "))
 
