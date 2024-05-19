@@ -4,7 +4,7 @@ print("Welcome")
 List_notas=[]
 #creamo el diccionario donde se guardaran las keys con los valores de cda nua de ellas 
 estudiante={}
-ruta="C:/Users/USUARIO/OneDrive/Escritorio/Prueba_git/CRUD_Python_ReportsSchool"
+ruta="C:/Users/USUARIO/OneDrive/Escritorio/Prueba_git/CRUD_Python_ReportsSchool/"
 nombre_archivo="Grupo 1.txt"
 archivo= ruta + nombre_archivo
 
@@ -137,59 +137,58 @@ def Grupode_finido():
 def Editar_Estudiante():
     # Solicitar al usuario que ingrese el ID del estudiante que desea editar
     indice = input("Digite el ID del estudiante que desea editar: ")
-
     try:    
         # Abrir el archivo en modo lectura
         with open(archivo, "r") as documento:
             lineas = documento.readlines()  # Leer todas las líneas del archivo
-
-        # Variable para indicar si se encontró el ID
-        id_encontrado = False
+            # Variable para indicar si se encontró el ID
+            id_encontrado = False
             
-        # Iterar sobre cada línea del archivo para buscar el ID y mostrar los datos si se encuentra
-        for linea in lineas:
-            #Dividimos la linea por cada caracter " - "
-            partes = linea.strip().split(" - ")
-            #Si el ID de la linea es igual al ID que se ingreso, se imprime la linea
-            if partes[0].split(": ")[1] == indice:
-                id_encontrado = True
-                # Mostrar los datos actuales del estudiante
-                print("Datos actuales del estudiante:")
-                print(f"Nombre: {partes[1]}")
-                print(f"Identificación: {partes[2]}")
-                print(f"Calificación: {partes[3]}")
-                break
-        
-        # Verificar si se encontró el ID
+            # Iterar sobre cada línea del archivo para buscar el ID y mostrar los datos si se encuentra
+            for linea in lineas:
+                # Dividimos la linea por cada caracter " - "
+                partes = linea.strip().split(" - ")
+                # Si el ID de la linea es igual al ID que se ingreso, se imprime la linea
+                if partes[0].split(": ")[1] == indice:
+                    id_encontrado = True
+                    # Mostrar los datos actuales del estudiante
+                    print("Datos actuales del estudiante:")
+                    print(f"Nombre: {partes[1]}")
+                    print(f"Identificación: {partes[2]}")
+                    print(f"Calificación: {partes[3]}")
+                    break
+        # Si el id fue encontrado pedimos los nuevos datos
         if id_encontrado:
-            # Abrir el archivo en modo escritura para sobrescribirlo
-            with open(archivo, "r+") as documento:
-                # Iterar sobre cada línea del archivo para realizar la edición si es necesario
+            nuevo_nombre=input ("Digite el nuevo nombre:")
+            while True:
+                nueva_identificacion=input ("Digite el nueva identificacion:")
+                existe=False
+                if int(partes[2]) == int(nueva_identificacion):
+                    existe=True
+                    print("El estudiante ya existe, Por favor digite nuevo la identificación")
+                    break
+                if not existe:
+                    break
+            while True:
+                        nueva_calificacion = float(input("Digite la nueva calificación: "))
+                        if 0.0 <= nueva_calificacion <= 5.0:
+                            break  # Salir del bucle si la calificación es válida
+                        else:
+                            print("La calificación debe estar entre 0 y 5. Inténtelo de nuevo.")
+            with open(archivo, "w") as documento:
                 for linea in lineas:
                     partes = linea.strip().split(" - ")
                     if partes[0].split(": ")[1] == indice:
-                        # Realizar la edición solicitando los nuevos datos al usuario
-                        nuevo_nombre = input("Digite el nuevo nombre: ")
-                        nueva_identificacion = input("Digite la nueva identificación: ")     
-                        nueva_calificacion = float(input("Digite la nueva calificación: "))
-                        if 0.0 <= nueva_calificacion<= 5.0:
-                            break  # Salir del bucle si la calificación es válida, sale del bucle while
-                        else: # si la calificacion no es valida, la vuelve a pedir 
-                            print("La calificación debe estar entre 0 y 5. Inténtelo de nuevo.")
                         nueva_linea = f"id: {indice} - {nuevo_nombre} - {nueva_identificacion} - {nueva_calificacion}\n"
-                        print("ID encontrado")
                         documento.write(nueva_linea)
                     else:
                         documento.write(linea)
-            print("Los datos del estudiante han sido actualizados correctamente.")
-        else:
-            print(f"No se encontró ningún estudiante con el ID {indice}") 
-            documento.write(linea)
+        if not id_encontrado:
+            print(f"No se encontró ningún estudiante con el ID {indice}")
 
     except FileNotFoundError:
         print("El archivo no existe.")
 
-    
 def Agregar_estudiante_dinamicamente(): 
     while True:
         nombre = input("Digite el nombre del estudiante: ")
