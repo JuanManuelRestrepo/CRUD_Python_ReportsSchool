@@ -161,12 +161,14 @@ def Editar_Estudiante():
         if id_encontrado:
             nuevo_nombre=input ("Digite el nuevo nombre:")
             while True:
-                nueva_identificacion=input ("Digite el nueva identificacion:")
-                existe=False
-                if int(partes[2]) == int(nueva_identificacion):
-                    existe=True
-                    print("El estudiante ya existe, Por favor digite nuevo la identificación")
-                    break
+                nueva_identificacion = input("Digite la nueva identificación:")
+                existe = False
+                for linea in lineas:
+                    partes = linea.strip().split(" - ")
+                    if partes[2] == nueva_identificacion:
+                        existe = True
+                        print("La identificación ingresada ya está en uso. Por favor, ingrese una nueva identificación.")
+                        break
                 if not existe:
                     break
             while True:
